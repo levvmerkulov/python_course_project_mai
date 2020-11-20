@@ -11,7 +11,7 @@ from datetime import datetime
 @app_name.route('/index')
 @login_required
 def index():
-    posts = [
+    '''posts = [
         'Greenfield software development refers to developing a system \
         for a totally new environment and requires development from a \
         clean slate – no legacy code around. It is an approach used when \
@@ -22,8 +22,9 @@ def index():
         enabling integrations. Some examples of Greenfield software \
         development include: building a website or app from scratch, \
         setting up a new data center, or even implementing a new rules engine.'
-    ]
-    return render_template('index.html', title = 'Home', posts = posts)
+    ]'''
+
+    return render_template('index.html', title = 'Home') #posts = posts)
 
 @app_name.route('/login', methods = ['GET', 'POST'])
 def login():

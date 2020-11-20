@@ -2,12 +2,6 @@
 
 {% block content %}
     <h1>Hello, {{ current_user.username }}!</h1>
-    {% for post in posts %}
-        <div>
-            <p>
-            {{ post }}
-            </p> 
-            <br>
-        </div>
-    {% endfor %}
+    
+    {% include '_post.html' %}
 {% endblock %}
