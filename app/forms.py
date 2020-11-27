@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField,\
     TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, \
     Length, EqualTo
-from app.models import User
+from app.models import User, Post
 
 class LoginForm(FlaskForm):
     '''sign-in form on web page'''
@@ -49,3 +49,21 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username = self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username')
+
+class PostForm(FlaskForm):
+    '''post messages about Brown/Green-field approach at profile page'''
+    post = TextAreaField('Добавьте факт о подходах!', validators = [DataRequired(),
+        Length(min = 1, max = 280)])
+    submit = SubmitField('Submit')
+
+    """def validate_content(self, post):
+        word = 'подход'
+        if not word in post.data:
+            raise ValidationError('Please correct your information!')"""
+
+class ShowPostForm(FlaskForm):
+    '''show one random post at once'''
+    submit = SubmitField('Get random fact!')
+    """    cnt = len(Post.query.all())
+    rand_num = random.randint(1, cnt)
+    post = Post.query.get(rand_num)"""

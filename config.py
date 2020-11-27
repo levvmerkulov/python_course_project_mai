@@ -15,11 +15,8 @@ class Config(object):
     #database to use
     MYSQL_DB = 'flask_mai'
 
-    #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    #'sqlite:///' + os.path.join(basedir, 'app.db')
-
-    #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    #   'mysql://root:password' os.path.join(basedir, 'app.db') 
-
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:password@localhost/flask_mai'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:password@localhost/flask_mai'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    #Pagination options
+    POSTS_PER_PAGE = 3

@@ -1,30 +1,44 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app_name, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
+    PostForm, ShowPostForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Post
 from werkzeug.urls import url_parse
 from datetime import datetime
+import random
 
-
-@app_name.route('/')
-@app_name.route('/index')
+@app_name.route('/', methods = ['GET', 'POST'])
+@app_name.route('/index', methods = ['GET', 'POST'])
 @login_required
 def index():
-    '''posts = [
-        'Greenfield software development refers to developing a system \
-        for a totally new environment and requires development from a \
-        clean slate – no legacy code around. It is an approach used when \
-        you’re starting fresh and with no restrictions or dependencies.',
+    #show random informative post
+    """form = ShowPostForm()
+    if form.validate_on_submit():
+        ...
+        return redirect(url_for('index'))"""
 
-        'A pure Greenfield project is quite rare these days, you frequently \
-        end up interacting or updating some amount of existing code or \
-        enabling integrations. Some examples of Greenfield software \
-        development include: building a website or app from scratch, \
-        setting up a new data center, or even implementing a new rules engine.'
-    ]'''
+    cnt = len(Post.query.all())
+    rand_num = random.randint(1, cnt)
+    posts = Post.query.get(rand_num)
 
-    return render_template('index.html', title = 'Home') #posts = posts)
+    return render_template('index.html', title = 'Home', posts = posts) #,form)
+
+@app_name.route('/history')
+@login_required
+def history():
+    '''Show all facts about Greenfield & Brownfield'''
+    """page = request.args.get('page', 1, type = int)
+    posts = Post.query.order_by(Post.id).paginate( page, 
+        app.config['POSTS_PER_PAGE'], False )
+
+    next_url = url_for('explore', page = posts.next_num) if posts.has_next \
+        else None
+    prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev \
+        else None"""
+    posts = Post.query.order_by(Post.id).all()
+
+    return render_template('history.html', title = 'History', posts = posts)
 
 @app_name.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -75,12 +89,27 @@ def register():
 
     return render_template('register.html', title = 'Sign Up', form = form)
 
-@app_name.route('/user/<username>') # <..> has dynamic content inside
+@app_name.route('/user/<username>', methods = ['GET', 'POST']) # <..> has dynamic content inside
 @login_required
 def user(username):
     '''profile page'''
     user = User.query.filter_by(username = username).first_or_404()
-    return render_template('user.html', user = user)
+
+    form = PostForm()
+
+    if form.validate_on_submit(): #add new informative post
+        post = Post(
+            body = form.post.data.encode('utf-8'), 
+            author = current_user
+        )
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been accepted! Thanks for contribution.')
+        return redirect(url_for('index'))
+
+    posts = Post.query.filter_by(user_id = current_user.id)
+    return render_template('user.html', user = user, 
+        form = form, posts = posts)
 
 @app_name.route('/edit_profile', methods = ['GET', 'POST'])
 @login_required

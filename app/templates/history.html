@@ -16,10 +16,12 @@
             <p> {{ form.submit() }} </p>
         </form>
     {% endif %}---->
-<h3> Случайный факт № {{ posts.id }} (поделился 
-    <a href="{{ url_for ('user', username = posts.author.username) }}"> 
-        {{ posts.author.username }} 
+{% for post in posts %}
+<h3> Случайный факт № {{ post.id }} (поделился 
+    <a href="{{ url_for ('user', username = post.author.username) }}"> 
+        {{ post.author.username }} 
     </a>):
 </h3>
-    {{ posts.body }}
+    {{ post.body }}
+{% endfor %}
 {% endblock %}
