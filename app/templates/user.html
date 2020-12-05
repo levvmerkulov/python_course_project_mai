@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class = table style = "padding-left: 1%">
     <table>
         <tr valign="top">
             <td><img src="{{ user.avatar(128) }}"></td>
@@ -23,26 +24,40 @@
                 {% endif %}
             </td>
         </tr>
-
     </table>
+</div>
     <hr>
-
-   {% if form %}
-        <form action="" method="post" accept-charset="utf-8">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.post.label }}<br>
-                {{ form.post(cols = 32, rows = 4) }} <br>
-                {% for error in form.post.errors %}
-                    <span style = 'color: red;'>[{{ error }}] </span>
-                {% endfor %}
-            </p>
-            <p> {{ form.submit() }} </p>
-        </form>
+    {% if user  == current_user %}
+        {% if form %}
+            <form action="" method="post" accept-charset="utf-8" style = "padding-left: 1%">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.post.label }}<br>
+                    {{ form.post(cols = 64, rows = 4) }} <br>
+                    {% for error in form.post.errors %}
+                        <span style = 'color: red;'>[{{ error }}] </span>
+                    {% endfor %}
+                </p>
+                <p>
+                {{ form.submit() }}
+                </p>
+            </form>
+        {% endif %}
     {% endif %}
 
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
+
+<nav aria-label="Page navigation example" style="padding-left: 0.3%">
+    <ul class = "pagination">
+        {% if prev_url %}
+        <li class="page-item"><a class="page-link" href="{{ prev_url }}">Previous</a></li>
+        {% endif %}
+        {% if next_url %}
+        <li class="page-item"><a class="page-link" href="{{ next_url }}">Next</a>
+        {% endif %}
+    </ul>
+</nav>
 
 {% endblock %}

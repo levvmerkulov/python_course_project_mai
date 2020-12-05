@@ -55,15 +55,3 @@ class PostForm(FlaskForm):
     post = TextAreaField('Добавьте факт о подходах!', validators = [DataRequired(),
         Length(min = 1, max = 280)])
     submit = SubmitField('Submit')
-
-    """def validate_content(self, post):
-        word = 'подход'
-        if not word in post.data:
-            raise ValidationError('Please correct your information!')"""
-
-class ShowPostForm(FlaskForm):
-    '''show one random post at once'''
-    submit = SubmitField('Get random fact!')
-    """    cnt = len(Post.query.all())
-    rand_num = random.randint(1, cnt)
-    post = Post.query.get(rand_num)"""

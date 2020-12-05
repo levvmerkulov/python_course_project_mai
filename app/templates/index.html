@@ -3,23 +3,11 @@
 {% block content %}
     <h1>Hello, {{ current_user.username }}!</h1>
 
-    <!-----{% if form %}
-        <form action="" method="post" accept-charset="utf-8">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.post.label }}<br>
-                {{ form.post(cols = 32, rows = 4) }} <br>
-                {% for error in form.post.errors %}
-                    <span style = 'color: red;'>[{{ error }}] </span>
-                {% endfor %}
-            </p>
-            <p> {{ form.submit() }} </p>
-        </form>
-    {% endif %}---->
-<h3> Случайный факт № {{ posts.id }} (поделился 
+<h3 style = "margin: 0; padding-left: 0.3%;">
+    Случайный факт № {{ posts.id }} (поделился 
     <a href="{{ url_for ('user', username = posts.author.username) }}"> 
         {{ posts.author.username }} 
     </a>):
 </h3>
-    {{ posts.body }}
+    <p style = "margin: 0; padding-left: 1%; padding-right: 1%">{{ posts.body }}</p>
 {% endblock %}

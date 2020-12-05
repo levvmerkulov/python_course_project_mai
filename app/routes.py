@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app_name, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
-    PostForm, ShowPostForm
+    PostForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
 from werkzeug.urls import url_parse
@@ -12,12 +12,6 @@ import random
 @app_name.route('/index', methods = ['GET', 'POST'])
 @login_required
 def index():
-    #show random informative post
-    """form = ShowPostForm()
-    if form.validate_on_submit():
-        ...
-        return redirect(url_for('index'))"""
-
     cnt = len(Post.query.all())
     rand_num = random.randint(1, cnt)
     posts = Post.query.get(rand_num)
@@ -28,17 +22,17 @@ def index():
 @login_required
 def history():
     '''Show all facts about Greenfield & Brownfield'''
-    """page = request.args.get('page', 1, type = int)
-    posts = Post.query.order_by(Post.id).paginate( page, 
-        app.config['POSTS_PER_PAGE'], False )
+    page = request.args.get('page', 1, type = int)
+    posts = Post.query.order_by(Post.id).paginate(
+        page, app_name.config['POSTS_PER_PAGE'], False)
 
-    next_url = url_for('explore', page = posts.next_num) if posts.has_next \
+    next_url = url_for('history', page = posts.next_num) if posts.has_next \
         else None
-    prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev \
-        else None"""
-    posts = Post.query.order_by(Post.id).all()
-
-    return render_template('history.html', title = 'History', posts = posts)
+    prev_url = url_for('history', page = posts.prev_num) if posts.has_prev \
+        else None
+    
+    return render_template('history.html', title = 'History', 
+        posts = posts.items, next_url = next_url, prev_url = prev_url)
 
 @app_name.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -94,6 +88,8 @@ def register():
 def user(username):
     '''profile page'''
     user = User.query.filter_by(username = username).first_or_404()
+    
+    page = request.args.get('page', 1, type = int)
 
     form = PostForm()
 
@@ -105,11 +101,19 @@ def user(username):
         db.session.add(post)
         db.session.commit()
         flash('Your post has been accepted! Thanks for contribution.')
-        return redirect(url_for('index'))
+        return redirect(url_for('user', username = user.username))
 
-    posts = Post.query.filter_by(user_id = current_user.id)
-    return render_template('user.html', user = user, 
-        form = form, posts = posts)
+    posts = Post.query.filter_by(user_id = current_user.id).paginate(
+        page, app_name.config['POSTS_PER_PAGE_USER'], False)
+
+    next_url = url_for('user', username = user.username, page = posts.next_num) \
+        if posts.has_next else None
+    
+    prev_url = url_for('user', username = user.username, page = posts.prev_num) \
+        if posts.has_prev else None
+
+    return render_template('user.html', user = user, form = form, 
+        posts = posts.items, next_url = next_url, prev_url = prev_url)
 
 @app_name.route('/edit_profile', methods = ['GET', 'POST'])
 @login_required
