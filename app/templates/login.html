@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<head>
+    <style type="text/css">
+   .auth { 
+    margin-left: auto; 
+    margin-right: auto;
+    padding-left: 0.3%;
+   }
+    </style>
+</head>
+
+<body>
+<div class="auth">
     <h1>Sign in</h1>
     <form action="" method="post" accept-charset="utf-8" novalidate>
         <!--token field for CSRF defence--> 
@@ -30,4 +42,6 @@
     <p>
         New User? <a href="{{ url_for('register') }}">Click to Register!</a>
     </p>
+</div>
+</body>
 {% endblock %}

@@ -19,5 +19,5 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     #Pagination options
-    POSTS_PER_PAGE = 7
+    POSTS_PER_PAGE = 5
     POSTS_PER_PAGE_USER = 3
