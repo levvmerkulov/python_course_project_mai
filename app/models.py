@@ -1,9 +1,10 @@
 from datetime import datetime
-from app import db
-from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import jwt
+from time import time 
 from hashlib import md5
+from app import db, login, app_name
 
 class User(UserMixin, db.Model):
     '''users table. UserMixin imports Flask-Login requirements'''
@@ -30,6 +31,26 @@ class User(UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
+    
+    def get_reset_password_token(self, expires_in = 600):
+        '''get jwt token to reset pass'''
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in}, 
+            app_name.config['SECRET_KEY'],
+            algorithm = 'HS256'
+        ).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(
+                token, 
+                app_name.config['SECRET_KEY'], 
+                algorithms = ['HS256']
+            )['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
 class Post(db.Model):
     """posts table"""
