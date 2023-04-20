@@ -1,5 +1,5 @@
 # python_course_project_mai
-Greenfield &amp; Brownfield Approach Flask Application
+Flask Application. Theme: Greenfield &amp; Brownfield Approach
 
 ### МАИ
 ### ФИО студента: Меркулов Лев Владимирович
